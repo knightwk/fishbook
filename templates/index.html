@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+        </div>
+    </div>
+    <div id="books" class="row">
+        {% for book in page_single %}
+            <div class="col-md-4 book-container">
+                <a href="{% url 'book:book_detail' book.id %}" class="">
+                    <div class="col-md-4 no-padding">
+                        <img class="book-img cssshadow" src="/media/{{ book.image }}">
+                    </div>
+                    <div style="margin-left: 0;" class="col-md-8 flex-vertical book-info">
+                        <span class="title">{{ book.bookname }}</span>
+                        <div class="description-font"><span>作者：</span><span>{{ book.author }}</span>
+                        </div>
+                        <span class="summary description-font">{{ book.summary }}</span>
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+
+    </div>
+    <div class="row">
+        <div class="flex-hor-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    {% if page_single.has_previous %}
+                        <li>
+                            <a href="{% url 'index' %}?page={{ page_single.previous_page_number }}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for page_index in page_range %}
+                        {% if page_index == page %}
+                            <li class="active"><a href="#">{{ page_index }}</a></li>
+                        {% else %}
+                            <li><a href="{% url 'index' %}?page={{ page_index }}">{{ page_index }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_single.has_next %}
+                        <li>
+                            <a href="{% url 'index' %}?page={{ page_single.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

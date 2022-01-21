@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    {{ block.super }}
+    <div class="row flex-vertical-center">
+        <div style="margin-top:20px;" class="col-md-6">
+            <span class="sub-title">我想赠送的书籍  共  {{ gifts | length }} 本</span>
+            <hr>
+        </div>
+    </div>
+    {% for gift in gift_books %}
+        <div class="row">
+            <a href="{% url 'book:book_detail' gift.id %}" class="">
+                <div style="margin-bottom:30px;" class="col-md-9 col-padding">
+                    <div class="col-md-2">
+                        <img class="book-img-small shadow" src="/media/{{ gift.image }}">
+                    </div>
+                    <div style="margin-top:6px;" class="col-md-6 flex-vertical">
+                            <span id="title"
+                                  class="book-middle-title">书名：{{ gift.bookname }}</span>
+                        <div style="margin-top:6px;"
+                             class="flex-vertical description-font">
+                            <span id="author">作者：{{ gift.author }}</span>
+                            <span id="publisher">出版社：{{ gift.publisher }}</span>
+                            <span id="price">价格：￥{{ gift.price }}元</span>
+                            <span id="isbn">ISBN：{{ gift.isbn }}</span>
+                        </div>
+                        <a class="link-normal"
+                           href="{% url 'book:redraw_from_gifts' gift.id %}">
+                            撤销
+                        </a>
+                    </div>
+                    <div class="col-md-3 flex-vertical">
+                        {% if gift.wishes_count %}
+                            <a href="{% url 'book:book_detail' gift.id %}">
+                                <span class="bg-info">{{ gift.wishes_count }}人想要</span>
+
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% empty %}
+        <h2>暂无赠送图书！</h2>
+    {% endfor %}
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/util.js' %}"></script>
+    <script src="{% static 'js/search_result.js' %}"></script>
+{% endblock %}

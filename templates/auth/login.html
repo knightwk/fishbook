@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+    <div class="row white-bg-margin">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-2">
+                    <a onclick="window.history.go(-1)" href="#">返回</a>
+                </div>
+            </div>
+            <div class="bg-container">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                        <span class="big-title">鱼 书</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 flex-vertical personal-detail">
+                        <p style="color: red">{{ msg }}</p>
+                        <form action="{% url 'user:login' %}" method="post" onSubmit="return check();">
+                            {% csrf_token %}
+                            <input style="width:100%" id="phone" name="phone" type="text"
+                                   placeholder="手机号"
+                                   class="none-input"
+                                   value="" >
+                            <div style="margin-top:3px;" class="password-box">
+                                <input id="password"
+                                       name="password"
+                                       placeholder="密码"
+                                       class="none-input" type="password">
+                                <a id="forget-password" class="description-font"
+                                   href="{% url 'user:forgetpwdrequest' %}">
+                                    忘记密码?</a>
+                            </div>
+{#                            {{ loginform.as_p }}#}
+{#                                <a id="forget-password" class="description-font"#}
+{#                                   href="#">#}
+{#                                    忘记密码?</a>#}
+                            <input style="margin-top:15px;" id="btn-submit" type="submit"
+                                   class="btn btn-big btn-block" value="登录">
+                        </form>
+                    </div>
+                </div>
+                <div style="margin-top:30px;" class="row">
+                    <div class="col-md-8 text-center col-md-offset-2">
+                        <span class="description-font">没有账号？</span><a
+                            href="{% url 'user:register' %}">注册</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        function check(){
+            var textflag = true;
+            if ($("#email").val()==''){
+                textflag = false;
+            }
+            if ($("#password").val()==''){
+                textflag = false;
+            }
+            return textflag
+        }
+    //email
+        $("#email").blur(function () {
+            console.log('失去焦点')
+            var emailNUm = $(this).val();
+            var reg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+            if(emailNUm==''){
+                alert('邮箱不能为空');
+                return false;
+            }
+        });
+    //password
+        $("#password").blur(function () {
+                console.log('失去焦点')
+                var passwordNUm = $(this).val();
+                var reg = /^\w{6,16}/
+                if(passwordNUm==''){
+                    alert('密码不能为空');
+                    return false;
+                }
+            })
+    </script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+    <div class="row white-bg-margin">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="row">
+                <div class="col-md-2">
+                    <a onclick="window.history.go(-1)" href="#">返回</a>
+                </div>
+            </div>
+            <div class="bg-container">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                        <span class="big-title">添加书籍</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                        <span class="title-small">{{ msg }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 flex-vertical personal-detail">
+                        <form id="myform" action="{% url 'book:addbook' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input style="width:100%" id="bookname" name="bookname"
+                                   type="text"
+                                   placeholder="书名"
+                                   class="none-input"
+                                   value="{{ book.bookname }}">
+                            <input style="width:100%" id="author" name="author" type="text"
+                                   placeholder="作者"
+                                   class="none-input"
+                                   value="{{ book.author }}">
+                            <input style="width:100%" id="binding" name="binding" type="text"
+                                   placeholder="请选择装订方式"
+                                   list="itemlist"
+                                   class="none-input"
+                                   value="">
+                            <datalist id="itemlist">
+                                <option value="0">精装</option>
+                                <option value="1">简装</option>
+                            </datalist>
+                            <input id="publisher" style="width:100%"
+                                   name="publisher"
+                                   placeholder="书籍出版社"
+                                   class="none-input" type="text">
+                            <input id="pubdate" style="width:100%"
+                                   name="pubdate"
+                                   placeholder="出版年限"
+                                   class="none-input" type="date">
+                            <input id="price" style="width:100%"
+                                   name="price"
+                                   placeholder="价格"
+                                   class="none-input" type="text">
+                            <input id="pages" style="width:100%"
+                                   name="pages"
+                                   placeholder="页码数"
+                                   class="none-input" type="text">
+                            <input id="isbn" style="width:100%"
+                                   name="isbn"
+                                   placeholder="条形码"
+                                   class="none-input" type="text">
+                            <input id="image" style="width:100%"
+                                   name="image"
+                                   placeholder="图片"
+                                   class="none-input" type="file">
+                            <textarea id="summary" style="width:100%"
+                                   name="summary"
+                                   placeholder="内容简介"
+                                      class="none-input" ></textarea>
+
+                            <input style="margin-top:15px;" id="btn-submit" type="submit"
+                                   class="btn btn-big btn-block" value="添加捐赠书籍">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+{% endblock %}

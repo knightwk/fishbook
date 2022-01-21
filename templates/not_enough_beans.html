@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/not-enough.css' %}">
+{% endblock %}
+{#{% block navbar %}#}
+{#    #}
+{#{% endblock %}#}
+{% block content %}
+    <div style="margin-top:60px;" class="row">
+        <div class="col-md-12 flex-vertical main-color">
+            <span style="margin-bottom: 10px;" class="large-title">你没有足够的鱼豆或超过限制</span>
+            <span>当前你有{{ request.user.beans }}个鱼豆</span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="main-color">
+                温馨提示：每请求1本书，需要消耗2个鱼豆
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div style="margin-top:50px;margin-bottom:30px;" class="col-md-3">
+            <span class="description-font">以下是获取鱼豆的方式</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 bg">
+            <span>1.上传图书</span>
+        </div>
+        <div class="col-md-9 bg-opacity">
+            <span>每添加一本最新书籍，获得1个鱼豆。点击链接上传：<a href="{% url 'book:addbook' %}">上传</a></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 bg">
+            <span>2.添加赠送清单</span>
+        </div>
+        <div class="col-md-9 bg-opacity">
+            <span>在搜索框内搜索书籍，并将书籍“加入到赠送清单” 即可获得1个鱼豆。务必确保你愿意赠送此书。</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 bg">
+            <span>3. 赠送图书</span>
+        </div>
+        <div class="col-md-9 bg-opacity">
+            <span>每成功赠送一本图书，我们将额外赠送你2个鱼豆。</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2 bg">
+            <span>4. 购买鱼豆</span>
+        </div>
+        <div class="col-md-9 bg-opacity">
+            <span>每支付1元获得2个鱼豆，支持支付宝支付。
+                请输入金额进行支付：<input type="text" name="money" id='money' placeholder="请输入金额">
+                <button id="pay">支付</button> {% csrf_token %}
+            </span>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script>
+
+        $('#pay').click(function () {
+            // 1.获取金额
+            var money = $('#money').val();
+            //2. 发出请求
+            $.get('{% url 'book:pay' %}', {money: money}, function (data) {
+                if (data.status === 200) {
+                    window.open(data.url);
+                    // 验证是否支付成功
+                    trade_no = data.orderid;
+                    csrftoken = $('input[name="csrfmiddlewaretoken"]').val();
+                    $.post(
+                        '{% url 'book:checkpay' %}',
+                        {
+                            orderid: trade_no,
+                            csrfmiddlewaretoken: csrftoken
+                        }, function (data) {
+                            if (data.status === 200) {
+                                alert(data.msg);
+                                window.location.reload();
+                            }
+                        })
+                } else {
+                    alert(data.msg)
+                }
+            });
+        })
+    </script>
+
+{% endblock %}

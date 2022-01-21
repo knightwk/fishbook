@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+    <div class="row white-bg-margin">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="bg-container">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                        <span class="big-title">鱼 书</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 flex-vertical personal-detail">
+                        <form id="myform" action="{% url 'user:register' %}" method="post">
+                            {% csrf_token %}
+                            <input style="width:100%" id="nickname" name="nickname"
+                                   type="text"
+                                   placeholder="昵称"
+                                   class="none-input"
+                                   value="">
+                            <span id="nickname_info"></span>
+                            <input style="width:100%" id="email" name="email" type="text"
+                                   placeholder="邮箱"
+                                   class="none-input"
+                                   value="">
+                            <span id="email_info"></span>
+                            <input id="password" style="width:100%"
+                                   name="password"
+                                   placeholder="密码"
+                                   class="none-input" type="password">
+                            <span id="password_info"></span>
+                            <input id="phone" style="width:100%"
+                                   name="phone"
+                                   placeholder="手机号码"
+                                   class="none-input" type="text">
+                            <span id="phone_info"></span>
+                            {{ registerform.as_p }}
+                            <input style="margin-top:15px;" id="btn-submit" type="submit"
+                                   class="btn btn-big btn-block" value="注册">
+                        </form>
+                    </div>
+                </div>
+                <div style="margin-top:30px;" class="row">
+                    <div class="col-md-8 text-center col-md-offset-2">
+                        <span class="description-font">已有账号？</span><a
+                            href="{% url 'user:login' %}">登录</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $("#email").blur(function () {
+            if (!$("#email").val()) {
+                $("#email_info").html("邮箱不可以为空！").css("color", "red")
+            } else {
+                $.ajax({
+                    url: "/user/checkemail/",
+                    method: "GET",
+                    data: {
+                        email: $("#email").val(),
+                    },
+                    success: function (data) {
+                        if (data['status'] === 400) {
+                            $("#email_info").html(data['msg']).css("color", "red")
+                        } else if (data['status'] === 200) {
+                            $("#email_info").html(data['msg']).css("color", "green")
+                        }
+                    }
+                })
+            }
+        })
+        $("#phone").blur(function () {
+            if (!$("#phone").val()) {
+                $("#phone_info").html("手机号不可以为空！").css("color", "red")
+            } else {
+                $.ajax({
+                    url: "/user/checkphone/",
+                    method: "GET",
+                    data: {
+                        phone: $("#phone").val(),
+                    },
+                    success: function (data) {
+                        if (data['status'] === 400) {
+                            $("#phone_info").html(data['msg']).css("color", "red")
+                        } else if (data['status'] === 200) {
+                            $("#phone_info").html(data['msg']).css("color", "green")
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+{% endblock %}

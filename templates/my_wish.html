@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+    {{ block.super }}
+    <div class="row flex-vertical-center">
+        <div style="margin-top:20px;" class="col-md-6">
+            <span class="sub-title">我想要的书籍  共  {{ wish_books | length }} 本</span>
+            <hr>
+        </div>
+    </div>
+    {% for wish_book in wish_books %}
+        <div class="row">
+            <a href="{% url 'book:book_detail' wish_book.id %}" class="">
+                <div style="margin-bottom:30px;" class="col-md-9 col-padding">
+                    <div class="col-md-2">
+                        <img class="book-img-small shadow" src="/media/{{ wish_book.image }}">
+                    </div>
+                    <div style="margin-top:6px;" class="col-md-6 flex-vertical">
+                            <span id="title"
+                                  class="book-middle-title">书名：{{ wish_book.bookname }}</span>
+                        <div style="margin-top:6px;"
+                             class="flex-vertical description-font">
+                            <span id="author">作者：{{ wish_book.author }}</span>
+                            <span id="publisher">出版社：{{ wish_book.publisher }}</span>
+                            <span id="price">价格：￥{{ wish_book.price }}元</span>
+                            <span id="isbn">ISBN：{{ wish_book.isbn }}</span>
+                        </div>
+                        <a class="link-normal"
+                           href="{% url 'book:redraw_from_wishes' wish_book.id %}">
+                            撤销
+                        </a>
+                    </div>
+                    <div class="col-md-3 flex-vertical">
+                        {% if wish_book %}
+                            <a href="{% url 'book:book_detail' wish_book.id %}">
+                                <span class="bg-info">{{ wish_book | length }}人赠送</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% empty %}
+        <h2>暂无心愿图书</h2>
+    {% endfor %}
+
+{% endblock %}
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/util.js' %}"></script>
+{% endblock %}

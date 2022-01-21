@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+
+{% block title %}
+    <title>鱼书</title>
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet"
+          href="{% static '3rd/ui/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="shortcut icon"
+          href="{% static 'images/icon.png' %}">
+{% endblock %}
+
+<body>
+{% block navbar %}
+    <div class="nav-self">
+        <div style="padding-top: inherit" class="container">
+            <form class="form-inline" action="{% url 'book:search' %}" method="get">
+                <div class="flex-vertical-center-height">
+                    <div class="col-md-2">
+                        <img src="{% static 'images/logo-yushu.png' %}"/>
+                    </div>
+                    <div style="margin-left:30px;" class="col-md-8 input-group">
+                        <input name="q" type="text" placeholder="ISBN、图书名称"
+                               class="form-control input-sm">
+                        <span class="input-group-btn">
+                            <input class="btn btn-search" type="submit" value="搜索"/>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="sub-nav flex-vertical-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-md-offset-1">
+                    <a id="recent" href="{% url 'index' %}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/upload.png' %}"/>
+                        <span>最近上传</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a id="gifts" href="{% url 'book:gift_list' %}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/gift.png' %}"/>
+                        <span>赠送清单</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a id="wishes" href="{% url 'book:wish_list' %}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/wish.png' %}"/>
+                        <span>心愿清单</span>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <a id="pending" href="{% url 'book:pending' %}"
+                       class="flex-vertical-hor-center">
+                        <img src="{% static 'images/fish.png' %}"/>
+                        <span>鱼漂</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-height flex-vertical-center float-menu">
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'user:personal' %}">{{ request.user.nickname }}的鱼书</a>
+            <a id="logout_btn" href="javascript:" style="margin-left: 40px;">注销</a>
+        {% else %}
+            <div style="float:right">
+                <a href="{% url 'user:login' %}">登录</a>
+                <a style="margin-left: 40px;" href="{% url 'user:register' %}">注册</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+<div class='container'>
+    <div class="row">
+        {% with messages=get_flashed_messages %}
+            {% for message in messages %}
+                {% if message %}
+                    <div class="alert alert-warning" role="alert">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endwith %}
+        {% if form and form.errors %}
+            {% for key, error in form.errors.items %}
+                <div class="alert alert-warning" role="alert">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% block content %} {% endblock %}
+</div>
+<div id="footer" class="flex-hor-center">
+    <span>© 2017-2020 yushu.im created by 七月</span>
+</div>
+</body>
+
+{% block scripts %}
+    <script src="{% static '3rd/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static '3rd/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/base.js' %}"></script>
+    <script>
+        $("#logout_btn").click(function () {
+            const rel = confirm("亲爱的，确定要离开我吗？T_T");
+            if (rel) {
+                location.href = "/user/logout/"
+            }
+        })
+    </script>
+{% endblock %}
+
+</html>
